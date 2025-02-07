@@ -1,0 +1,20 @@
+name: ci-sonarcloud
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  run-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.5.1
+      - run: npm install jest @types/jest sonar-scanner --only-dev
+      - run: npm run test --code--coverage
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
